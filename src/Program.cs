@@ -111,17 +111,20 @@ namespace StackCalc {
                 // goto default is used because C# does not seem to support
                 // fallthrough switch evaluation in the way other languages do.
                 switch(token) {
-                    case "drop":  // ( a -- )
-                        recognized = true;
-                        operandCheck(token, 1);
-                        stack.Pop();
-                        haveResult = false;
-                        goto default;
 
                     case "dup":  // ( a -- a a )
                         recognized = true;
                         operandCheck(token, 1);
+
                         result = stack.Peek();
+                        goto default;
+
+                    case "drop":  // ( a -- )
+                        recognized = true;
+                        operandCheck(token, 1);
+
+                        stack.Pop();
+                        haveResult = false;
                         goto default;
 
                     case "swap":  // ( a b -- b a )
@@ -131,8 +134,49 @@ namespace StackCalc {
 
                         b = stack.Pop();
                         a = stack.Pop();
+
                         stack.Push(b);
                         stack.Push(a);
+                        goto default;
+
+                    case "+":  // ( a b -- sum )
+                        recognized = true;
+                        operandCheck(token, 2);
+
+                        b = stack.Pop();
+                        a = stack.Pop();
+
+                        result = a + b;
+                        goto default;
+
+                    case "-":  // ( a b -- difference )
+                        recognized = true;
+                        operandCheck(token, 2);
+
+                        b = stack.Pop();
+                        a = stack.Pop();
+
+                        result = a - b;
+                        goto default;
+
+                    case "*":  // ( a b -- product )
+                        recognized = true;
+                        operandCheck(token, 2);
+
+                        b = stack.Pop();
+                        a = stack.Pop();
+
+                        result = a * b;
+                        goto default;
+
+                    case "/":  // ( a b -- quotient )
+                        recognized = true;
+                        operandCheck(token, 2);
+
+                        b = stack.Pop();
+                        a = stack.Pop();
+
+                        result = a / b;
                         goto default;
 
                     case "over":  // ( a b -- a b a )
@@ -142,6 +186,7 @@ namespace StackCalc {
 
                         b = stack.Pop();
                         a = stack.Pop();
+
                         stack.Push(a);
                         stack.Push(b);
                         stack.Push(a);
@@ -162,38 +207,6 @@ namespace StackCalc {
                         stack.Push(b);
                         stack.Push(c);
                         stack.Push(a);
-                        goto default;
-
-                    case "+":  // ( a b -- sum )
-                        recognized = true;
-                        operandCheck(token, 2);
-                        b = stack.Pop();
-                        a = stack.Pop();
-                        result = a + b;
-                        goto default;
-
-                    case "-":  // ( a b -- difference )
-                        recognized = true;
-                        operandCheck(token, 2);
-                        b = stack.Pop();
-                        a = stack.Pop();
-                        result = a - b;
-                        goto default;
-
-                    case "*":  // ( a b -- product )
-                        recognized = true;
-                        operandCheck(token, 2);
-                        b = stack.Pop();
-                        a = stack.Pop();
-                        result = a * b;
-                        goto default;
-
-                    case "/":  // ( a b -- quotient )
-                        recognized = true;
-                        operandCheck(token, 2);
-                        b = stack.Pop();
-                        a = stack.Pop();
-                        result = a / b;
                         goto default;
 
                     default:
@@ -229,12 +242,12 @@ namespace StackCalc {
             }
         }
         public static void Main(string[] args) {
-            Console.WriteLine("C# Basic Stack Calculator");
-            Console.WriteLine("Use the exit command to quit the program.");
+            Console.WriteLine("Stacalc: a tiny stack calculator in C#");
+            Console.WriteLine("Use the exit command to quit the program");
 
             string command = "";
 
-            VM vm = new VM(true);
+            VM vm = new VM();
 
             // REPL environment, run until "exit" is hit
             do {

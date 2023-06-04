@@ -99,28 +99,72 @@ namespace StackCalc {
                 }
             }
             private void attemptOperatorHandling(string token) {
-                //TODO: see if there's a way to pack this up neatly
-                // Candidates include: reflection + callables.
-                int a, b, result;
+                // TODO: see if there's a way to encapsulate this up neatly.
+                // Reflection with callables or classes may be a way
+                // to handle this, but I'm not yet sure how to idiomatically
+                // annotate and implement handling an arbitrary # of arguments.
+                int a, b, c, result;
                 result = 0;
                 bool recognized = false;
                 bool haveResult = true; // set to false to disable pushing to stack
 
+                // goto default is used because C# does not seem to support
+                // fallthrough switch evaluation in the way other languages do.
                 switch(token) {
-                    case "drop":
+                    case "drop":  // ( a -- )
                         recognized = true;
                         operandCheck(token, 1);
                         stack.Pop();
                         haveResult = false;
                         goto default;
 
-                    case "dup":
+                    case "dup":  // ( a -- a a )
                         recognized = true;
                         operandCheck(token, 1);
                         result = stack.Peek();
                         goto default;
 
-                    case "+":
+                    case "swap":  // ( a b -- b a )
+                        recognized = true;
+                        operandCheck(token, 2);
+                        haveResult = false;
+
+                        b = stack.Pop();
+                        a = stack.Pop();
+                        stack.Push(b);
+                        stack.Push(a);
+                        goto default;
+
+                    case "over":  // ( a b -- a b a )
+                        recognized = true;
+                        operandCheck(token, 2);
+                        haveResult = false;
+
+                        b = stack.Pop();
+                        a = stack.Pop();
+                        stack.Push(a);
+                        stack.Push(b);
+                        stack.Push(a);
+
+                        goto default;
+
+                    case "rot":  // rotate, ( a b c -- b c a )
+                        recognized = true;
+                        operandCheck(token, 3);
+                        haveResult = false;
+
+                        // get the initial ordering
+                        c = stack.Pop();
+                        b = stack.Pop();
+                        a = stack.Pop();
+
+                        // put it back in a new one
+                        stack.Push(b);
+                        stack.Push(c);
+                        stack.Push(a);
+                        goto default;
+
+                    case "+":  // ( a b -- sum )
                         recognized = true;
                         operandCheck(token, 2);
                         b = stack.Pop();
@@ -128,12 +172,28 @@ namespace StackCalc {
                         result = a + b;
                         goto default;
 
-                    case "-":
+                    case "-":  // ( a b -- difference )
                         recognized = true;
                         operandCheck(token, 2);
                         b = stack.Pop();
                         a = stack.Pop();
                         result = a - b;
+                        goto default;
+
+                    case "*":  // ( a b -- product )
+                        recognized = true;
+                        operandCheck(token, 2);
+                        b = stack.Pop();
+                        a = stack.Pop();
+                        result = a * b;
+                        goto default;
+
+                    case "/":  // ( a b -- quotient )
+                        recognized = true;
+                        operandCheck(token, 2);
+                        b = stack.Pop();
+                        a = stack.Pop();
+                        result = a / b;
                         goto default;
 
                     default:

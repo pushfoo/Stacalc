@@ -51,7 +51,11 @@ namespace StackCalc {
             public OperatorUnderflowException(string message, Exception inner) : base(message, inner) {}
 
             public OperatorUnderflowException(string op, int requires, int have)
-             : base(String.Format("Operator '{0}' requires {1} operands, but only have {2}", op, requires, have)) {}
+             : base(
+                String.Format(
+                    "Operator '{0}' requires {1} operand{2}, but only have {3}",
+                    op, requires, requires > 1 ? "s" : "", have
+              )) {}
         }
         private class BadOperatorException : Exception {
             public BadOperatorException() {}
@@ -76,7 +80,9 @@ namespace StackCalc {
                 for(int i = arr.Length - 1; i > 0; i--) {
                     Console.Write(String.Format("{0} ", arr[i]));
                 }
-                Console.WriteLine(String.Format("{0}", arr[0]));
+                if(arr.Length > 0) {
+                    Console.WriteLine(String.Format("{0}", arr[0]));
+                }
             }
             private void attemptIntHandling(string token) {
                 int parsed = Int32.Parse(token);

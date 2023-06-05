@@ -242,11 +242,11 @@ namespace Stacalc {
         /// <summary>
         /// Echo quoted tokens to the console.
         /// </summary>
-        public static void echoItems<T>(T[] items, string sep = " ") {
+        public static void echoItems<T>(T[] items, string itemFormat = "{0}", string sep = " ") {
             // TODO: Decide whether leaving an unhandled null here is acceptable.
             Console.WriteLine(String.Join(
-                sep, items.Select(item => item.ToString()))
-            );
+                sep, items.Select(item => String.Format(itemFormat, item))
+            ));
         }
 
         public static void Main(string[] args) {

@@ -232,11 +232,16 @@ namespace StackCalc {
                         handleToken(token);
                     }
                 }
-                catch (BadOperatorException e) {
+                catch (Exception e) when (e is BadOperatorException ||
+                                          e is OperatorUnderflowException ||
+                                          e is OverflowException) {
+                    Console.Write("User Error: ");
                     Console.WriteLine(e.Message);
                 }
-                catch (OperatorUnderflowException e) {
+                catch (Exception e) {
+                    Console.Write("System Error: ");
                     Console.WriteLine(e.Message);
+                    Console.WriteLine(e.StackTrace);
                 }
                 printStack();
             }

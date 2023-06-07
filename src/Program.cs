@@ -331,17 +331,17 @@ namespace Stacalc {
 
     public class StacalcProgram {
 
-    /// <summary>
-    /// Get user input, including a possible null line.
-    /// </summary>
-    public static string? prompt(string? promptString = "> ") {
-        if (promptString != null) {
-            Console.Write(promptString);
-        }
+        /// <summary>
+        /// Get user input, including a possible null line.
+        /// </summary>
+        public static string? prompt(string? promptString = "> ") {
+            if (promptString != null) {
+                Console.Write(promptString);
+            }
 
-        string? result = Console.ReadLine();
-        return result;
-    }
+            string? result = Console.ReadLine();
+            return result;
+        }
 
         /// <summary>
         /// Echo items to the console, optionally allowing formatting

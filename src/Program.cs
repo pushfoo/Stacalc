@@ -43,29 +43,14 @@ namespace Stacalc {
     /// <summary>
     /// The line & column number of a token, along with the file it's in (if any)
     /// </summary>
-    public readonly record struct FilePosition {
-        public readonly int     line;
-        public readonly int     col;
-        public readonly string? file;
-
-        public FilePosition(int line, int col, string? file = null) {
-            this.line = line;
-            this.col  = col;
-            this.file = file;
-        }
-    }
+    public record FilePosition(int line, int col, string? file = null);
 
     /// <summary>
     /// An immutable token read from a file
     /// </summary>
-    public readonly record struct Token {
-        public readonly string       value;
-        public readonly FilePosition position;
-
-        public Token(string value, FilePosition position) {
-            this.value = value;
-            this.position = position;
-        }
+    public record Token {
+        public string       value;
+        public FilePosition position;
 
         public  Token(string value, int line, int col, string? file = null) {
             this.position = new FilePosition(line, col, file);

@@ -3,10 +3,20 @@
 A tiny stack calculator with some
 [Forth](https://en.wikipedia.org/wiki/Forth_(programming_language))
 words added for convenience. Written in C# for .NET 7.0 to refresh my skills.
+If you already know what a stack calculator is, skip to the usage section
+below.
 
-## Stack Calculators tl;dr
+For the really impatient:
+1. Clone this repo
+2. Run `dotnet run` in your terminal with the [.NET 7.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/7.0) installed
+3. Enter something like `3 2 +` and press enter.
 
-### Why?
+The supported math operators include `+`, `-`, `*`, and `/`. A full list of
+supported words is located at the end of this file.
+
+## What's a Stack Calculator & Why?
+
+### tl;dr
 
 1. I want to focus on learning C# without adding a second complicated grammar
 2. Postfix is easier and less ambiguous than other syntax
@@ -14,8 +24,9 @@ words added for convenience. Written in C# for .NET 7.0 to refresh my skills.
 
 ### Postfix: Math, but not as most know it.
 
-The usual way of writing math is called infix notation. It puts operators like
-`+` between two operands. Postfix puts them afterward. For example:
+The usual way of writing arithmetic is called infix notation. It puts operators
+like `+` between two operands. Postfix notation puts them afterward. For
+example:
 
 | Infix (normal)      | Postfix         |
 | ------------------- | --------------- |
@@ -28,38 +39,43 @@ operations always happens in the order they appear: from left to right.
 
 ### Stacks?
 
-Since the order of operations is always clear, we can move all the operations
-to the end:
+Since the order of operations is always clear, we can treat the numbers as
+a stack. Entering a number puts it on top, and a math operation will take two numbers and put back one.
 
-| Infix               | Postfix, operations at the end |
-| ------------------- | ------------------------------ |
-| `3 - 2`             | `3 2 -`                        |
-| `(8 - 2) * 3`       | `8 2 3 - *`                    |
-| `(9 - 1) / (1 + 3)` | `9 1 1 3 - + /`                |
+For example, let's look at how `8 2 - 3 *` is executed.
 
-This way, we can treat the numbers as a stack. Entering a number
-puts it onto the stack. All arithmetic operations above do the following:
+1. `8` is pushed onto the stack
+2. `2` is pushed onto the stack
+2. `-` removes the top two elements and puts `6` on top of the stack
+4. `3` is pushed onto the stack
+5. `*` removes the top two elements and puts `18` on top of the stack
 
-1. Take two numbers off the top of the stack
-2. Do something to them
-3. Put the result on top of the stack
+### Next Steps
 
-Although it doesn't actually matter where we put the operators as long
-as each has enough operands on the stack, putting them at the end is a
-step towards separating the code from the data, which will let us
-turn this define new operators or words, and turn this calculator into
+With stacks, we can reorder our expressions to put the operators at the end.
+
+1. `3` is pushed onto the stack
+1. `8` is pushed onto the stack
+2. `2` is pushed onto the stack
+2. `-` removes the top two elements and puts `6` on top of the stack
+5. `*` removes the top two elements and puts `18` on top of the stack
+
+As long as each operator has enough operands on the stack, it doesn't matter
+how far after the numbers it is. If we add some new stack reordering words,
+we can begin separating our data from our code to define functions. This is
+an important step toward user-defined words and turning a calculator into
 a programming language.
 
 ## Usage
 
 ### Requirements
 
-* The [NET 7.0 C# SDK](https://dotnet.microsoft.com/en-us/download/dotnet/7.0)
+* The [.NET 7.0 C# SDK](https://dotnet.microsoft.com/en-us/download/dotnet/7.0)
 * The ability to open & run commands in the terminal
 
 ### Building & Launching
 
-If you have the .NET 7.0 SDK installed, you can launch from the root directory as follows:
+Once you have the .NET 7.0 SDK installed, you can launch from the root directory as follows:
 ```console
 $ dotnet run
 Stacalc: a tiny stack calculator in C#
